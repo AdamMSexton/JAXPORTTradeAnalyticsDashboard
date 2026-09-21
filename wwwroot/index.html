@@ -1,0 +1,296 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>JAXPORT Trade Analytics</title>
+
+    <link rel="stylesheet" href="/css/site.css" />
+    <link rel="stylesheet" href="lib/leaflet/leaflet.css"
+</head>
+
+<body>
+
+    <header class="app-header">
+        <div>
+            <h1>JAXPORT Trade Analytics Dashboard</h1>
+            <p>Containerized trade analysis and opportunity exploration</p>
+        </div>
+    </header>
+
+    <main class="dashboard">
+
+        <!-- FILTERS -->
+        <section class="filter-panel">
+
+            <div class="filter">
+                <label for="yearFilter">Year</label>
+                <select id="yearFilter">
+                    <option value="">All Years</option>
+                    <option>2021</option>
+                    <option>2022</option>
+                    <option>2023</option>
+                    <option>2024</option>
+                    <option>2025</option>
+                </select>
+            </div>
+
+            <div class="filter">
+                <label for="quarterFilter">Quarter</label>
+                <select id="quarterFilter">
+                    <option value="">All Quarters</option>
+                    <option>Q1</option>
+                    <option>Q2</option>
+                    <option>Q3</option>
+                    <option>Q4</option>
+                </select>
+            </div>
+
+            <div class="filter">
+                <label for="directionFilter">Direction</label>
+                <select id="directionFilter">
+                    <option value="">Imports & Exports</option>
+                    <option value="I">Imports</option>
+                    <option value="E">Exports</option>
+                </select>
+            </div>
+
+            <div class="filter">
+                <label for="commodityFilter">Commodity</label>
+                <select id="commodityFilter">
+                    <option value="">All Commodities</option>
+                </select>
+            </div>
+
+            <div class="filter">
+                <label for="usPortFilter">U.S. Port</label>
+                <select id="usPortFilter">
+                    <option value="">All Ports</option>
+                    <option value="JACKSONVILLE">Jacksonville</option>
+                </select>
+            </div>
+
+            <div class="filter">
+                <label for="topNFilter">Routes</label>
+                <select id="topNFilter">
+                    <option value="5">Top 5</option>
+                    <option value="10" selected>Top 10</option>
+                    <option value="25">Top 25</option>
+                    <option value="50">Top 50</option>
+                </select>
+            </div>
+
+        </section>
+
+
+        <!-- KPI CARDS -->
+        <section class="kpi-grid">
+
+            <article class="kpi-card">
+                <span class="kpi-label">Total TEUs</span>
+                <strong id="totalTeus">—</strong>
+            </article>
+
+            <article class="kpi-card">
+                <span class="kpi-label">Total Value</span>
+                <strong id="totalValue">—</strong>
+            </article>
+
+            <article class="kpi-card">
+                <span class="kpi-label">Trade Routes</span>
+                <strong id="routeCount">—</strong>
+            </article>
+
+            <article class="kpi-card">
+                <span class="kpi-label">YoY Change</span>
+                <strong id="yoyChange">—</strong>
+            </article>
+
+        </section>
+
+
+        <!-- VIEW SELECTOR -->
+        <nav class="view-tabs" aria-label="Dashboard views">
+            <button id="mapTab"
+                    class="view-tab active"
+                    data-view="mapView">
+                Map
+            </button>
+
+            <button id="chartTab"
+                    class="view-tab"
+                    data-view="chartView">
+                Chart
+            </button>
+
+            <button id="tableTab"
+                    class="view-tab"
+                    data-view="tableView">
+                Table
+            </button>
+        </nav>
+
+
+        <!-- MAP -->
+        <section id="mapView" class="dashboard-view active-view">
+            <div class="view-header">
+                <div>
+                    <h2>Trade Route Map</h2>
+                    <p>Selected trade routes will be displayed geographically.</p>
+                </div>
+            </div>
+
+            <div id="tradeMap">
+                <div>
+                    <span class="placeholder-icon">◎</span>
+                    <h3>Interactive Trade Map</h3>
+                    <p>Route visualization will load here.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- CHART -->
+        <section id="chartView" class="dashboard-view">
+            <div class="view-header">
+                <div>
+                    <h2>Trade Trends</h2>
+                    <p>Historical and forecast trade trends.</p>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="tradeChart"></canvas>
+            </div>
+        </section>
+
+
+        <!-- TABLE -->
+        <section id="tableView" class="dashboard-view">
+            <div class="view-header">
+                <div>
+                    <h2>Trade Data</h2>
+                    <p>Detailed results for the current filter selection.</p>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="tradeTable">
+                    <thead>
+                        <tr>
+                            <th>Foreign Port</th>
+                            <th>Country</th>
+                            <th>Commodity</th>
+                            <th>Direction</th>
+                            <th>TEUs</th>
+                            <th>Value</th>
+                            <th>YoY</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tradeTableBody">
+                    <tbody id="tradeTableBody">
+                        <tr>
+                            <td>Cartagena</td>
+                            <td>Colombia</td>
+                            <td>Bananas</td>
+                            <td>Import</td>
+                            <td>18,420</td>
+                            <td>$42.6M</td>
+                            <td>+8.4%</td>
+                        </tr>
+
+                        <tr>
+                            <td>Santos</td>
+                            <td>Brazil</td>
+                            <td>Wood Products</td>
+                            <td>Import</td>
+                            <td>15,870</td>
+                            <td>$61.2M</td>
+                            <td>+4.1%</td>
+                        </tr>
+
+                        <tr>
+                            <td>Veracruz</td>
+                            <td>Mexico</td>
+                            <td>Vehicle Parts</td>
+                            <td>Export</td>
+                            <td>12,340</td>
+                            <td>$87.5M</td>
+                            <td>+11.7%</td>
+                        </tr>
+
+                        <tr>
+                            <td>Puerto Cortés</td>
+                            <td>Honduras</td>
+                            <td>Apparel</td>
+                            <td>Import</td>
+                            <td>9,760</td>
+                            <td>$35.8M</td>
+                            <td>-2.3%</td>
+                        </tr>
+
+                        <tr>
+                            <td>Kingston</td>
+                            <td>Jamaica</td>
+                            <td>Food Products</td>
+                            <td>Export</td>
+                            <td>8,910</td>
+                            <td>$29.4M</td>
+                            <td>+6.2%</td>
+                        </tr>
+
+                        <tr>
+                            <td>Buenos Aires</td>
+                            <td>Argentina</td>
+                            <td>Machinery</td>
+                            <td>Export</td>
+                            <td>7,480</td>
+                            <td>$73.1M</td>
+                            <td>+3.8%</td>
+                        </tr>
+
+                        <tr>
+                            <td>Guayaquil</td>
+                            <td>Ecuador</td>
+                            <td>Fresh Produce</td>
+                            <td>Import</td>
+                            <td>6,950</td>
+                            <td>$24.7M</td>
+                            <td>+9.5%</td>
+                        </tr>
+
+                        <tr>
+                            <td>Manzanillo</td>
+                            <td>Panama</td>
+                            <td>Consumer Goods</td>
+                            <td>Import</td>
+                            <td>5,820</td>
+                            <td>$31.9M</td>
+                            <td>-1.1%</td>
+                        </tr>
+                    </tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="app-footer">
+        UNF Computing Practicum • JAXPORT Trade Opportunity Project •
+        <a href="/licenses.html">Third-Party Licenses</a>
+    </footer>
+
+
+    <script src="/lib/leaflet/leaflet.js"></script>
+    <script src="lib/chartjs/chart.umd.min.js"></script>
+
+    <script src="/js/dashboard.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="/js/chart.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+@JAXPORT_HostAddress = http://localhost:5212
+
+GET {{JAXPORT_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
