@@ -129,6 +129,12 @@
                     data-view="tableView">
                 Table
             </button>
+
+            <button id="graphTab"
+                    class="view-tab"
+                    data-view="graphView">
+                Graph
+            </button>
         </nav>
 
 
@@ -189,7 +195,6 @@
                         </tr>
                     </thead>
 
-                    <tbody id="tradeTableBody">
                     <tbody id="tradeTableBody">
                         <tr>
                             <td>Cartagena</td>
@@ -271,8 +276,21 @@
                             <td>-1.1%</td>
                         </tr>
                     </tbody>
-                    </tbody>
                 </table>
+            </div>
+        </section>
+
+        <!-- GRAPH -->
+        <section id="graphView" class="dashboard-view">
+            <div class="view-header">
+                <div>
+                    <h2>Trade Analysis</h2>
+                    <p>Example relationship between two trade variables.</p>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="tradeGraph"></canvas>
             </div>
         </section>
 
@@ -290,6 +308,7 @@
     <script src="/js/dashboard.js"></script>
     <script src="/js/map.js"></script>
     <script src="/js/charts.js"></script>
+    <script src="/js/graph.js"></script>
 
 
 </body>
