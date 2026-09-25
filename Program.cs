@@ -1,6 +1,7 @@
 using JAXPORT.Models;
 using JAXPORT.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +22,7 @@ builder.Services.AddScoped<ISupportService, SupportService>();        // Registe
 
 var app = builder.Build();
 
-// DB Healthcheck API
+// ***** DB Healthcheck API
 app.MapGet("/api/health/database", async (ISupportService _ss) =>
 {
     var healthCheckResult = await _ss.GetDbHealthStatusAsync();
@@ -35,7 +36,20 @@ app.MapGet("/api/health/database", async (ISupportService _ss) =>
     }
 });
 
-
+// ***** Port Endpoints
+// List of Ports/Cities by timeframe
+app.MapGet("api/ports", async (PortByDateDto dto, IPortService _ps) =>
+{
+    var listRequestResult = await _ps.GetPortsByDateAsync(dto);
+    if (listRequestResult.Success)
+    {
+        return Results.Ok(listRequestResult.Data);
+    }
+    else
+    {
+        return Results.InternalServerError();
+    }
+}
 
 // Development tools
 if (app.Environment.IsDevelopment())
