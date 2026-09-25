@@ -1,0 +1,13 @@
+﻿namespace HealthDataCollector.Enums
+{
+    public enum ServiceError
+    {
+        None,
+        NotFound,
+        NotAllowed,
+        Validation,
+        Conflict,
+        Database,
+        Internal,
+    }
+}

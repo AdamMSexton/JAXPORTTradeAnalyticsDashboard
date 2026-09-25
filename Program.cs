@@ -1,4 +1,5 @@
 using JAXPORT.Models;
+using JAXPORT.Services;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -12,6 +13,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<JaxportDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("JaxportDatabase")));
+
+builder.Services.AddScoped<IPortService, PortService>();        // Register Port Endpoint service
+builder.Services.AddScoped<ISupportService, SupportService>();        // Register Support service
 
 var app = builder.Build();
 
