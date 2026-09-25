@@ -12,7 +12,9 @@ builder.Services.AddOpenApi();
 // Register DB service
 builder.Services.AddDbContext<JaxportDbContext>(options =>
     options.UseNpgsql(
-        builder.Configuration.GetConnectionString("JaxportDatabase")));
+        builder.Configuration.GetConnectionString("JaxportDatabase"),
+        npgsqlOptions => npgsqlOptions.CommandTimeout(5)
+    ));
 
 builder.Services.AddScoped<IPortService, PortService>();        // Register Port Endpoint service
 builder.Services.AddScoped<ISupportService, SupportService>();        // Register Support service
@@ -20,31 +22,20 @@ builder.Services.AddScoped<ISupportService, SupportService>();        // Registe
 var app = builder.Build();
 
 // DB Healthcheck API
-app.MapGet("/api/health/database", async (JaxportDbContext db, IConfiguration config) =>
+app.MapGet("/api/health/database", async (ISupportService _ss) =>
 {
-    var connectionString = config.GetConnectionString("JaxportDatabase");
-    var cs = new NpgsqlConnectionStringBuilder(connectionString);
-    bool connected = false;
-
-    try
+    var healthCheckResult = await _ss.GetDbHealthStatusAsync();
+    if (healthCheckResult.Success)
     {
-        connected = await db.Database.CanConnectAsync();
-
-        return Results.Ok(new
-        {
-            host = cs.Host,
-            connected
-        });
+        return Results.Ok(healthCheckResult.Data);
     }
-    catch
+    else
     {
-        return Results.Ok(new
-        {
-            host = cs.Host,
-            connected = false
-        });
+        return Results.InternalServerError();
     }
 });
+
+
 
 // Development tools
 if (app.Environment.IsDevelopment())
