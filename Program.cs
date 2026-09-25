@@ -1,6 +1,7 @@
 using JAXPORT.Models;
 using JAXPORT.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Npgsql;
 
@@ -38,7 +39,7 @@ app.MapGet("/api/health/database", async (ISupportService _ss) =>
 
 // ***** Port Endpoints
 // List of Ports/Cities by timeframe
-app.MapGet("api/ports", async (PortByDateDto dto, IPortService _ps) =>
+app.MapGet("/api/ports", async ([AsParameters] PortByDateDto dto, IPortService _ps) =>
 {
     var listRequestResult = await _ps.GetPortsByDateAsync(dto);
     if (listRequestResult.Success)
@@ -49,7 +50,7 @@ app.MapGet("api/ports", async (PortByDateDto dto, IPortService _ps) =>
     {
         return Results.InternalServerError();
     }
-}
+});
 
 // Development tools
 if (app.Environment.IsDevelopment())

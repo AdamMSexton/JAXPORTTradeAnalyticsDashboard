@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using JAXPORT.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace JAXPORT.Models;
 public class JaxportDbContext : DbContext
@@ -7,4 +8,6 @@ public class JaxportDbContext : DbContext
         : base(options)
     {
     }
+    public DbSet<JaxportCleanPiers> Piers => Set<JaxportCleanPiers>();
+    public DbSet<JaxportReferencePorts> Ports => Set<JaxportReferencePorts>();
 }
