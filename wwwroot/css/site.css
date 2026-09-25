@@ -294,3 +294,19 @@ td {
     .license-section p {
         line-height: 1.6;
     }
+
+.db-status {
+    margin-top: 4px;
+}
+
+#db-status-dot {
+    color: gray;
+}
+
+    #db-status-dot.connected {
+        color: green;
+    }
+
+    #db-status-dot.disconnected {
+        color: red;
+    }
