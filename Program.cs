@@ -18,10 +18,22 @@ builder.Services.AddDbContext<JaxportDbContext>(options =>
         npgsqlOptions => npgsqlOptions.CommandTimeout(5)
     ));
 
-builder.Services.AddScoped<IPortService, PortService>();        // Register Port Endpoint service
-builder.Services.AddScoped<ISupportService, SupportService>();        // Register Support service
+builder.Services.AddSingleton<AppStateService>();                   // App State Service
+builder.Services.AddScoped<IPortService, PortService>();            // Register Port Endpoint service
+builder.Services.AddScoped<ISupportService, SupportService>();      // Register Support service
 
 var app = builder.Build();
+
+// Load Port Data to cache
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<JaxportDbContext>();
+    var appState = scope.ServiceProvider.GetRequiredService<AppStateService>();
+
+    var ports = await db.Ports.ToListAsync();
+
+    appState.SetPorts(ports);
+}
 
 // ***** DB Healthcheck API
 app.MapGet("/api/health/database", async (ISupportService _ss) =>

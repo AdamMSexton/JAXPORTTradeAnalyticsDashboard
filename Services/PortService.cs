@@ -7,10 +7,12 @@ namespace JAXPORT.Services
     public class PortService : IPortService
     {
         private readonly JaxportDbContext _db;
+        private readonly AppStateService _ass;
 
-        public PortService(JaxportDbContext db)
+        public PortService(JaxportDbContext db, AppStateService ass)
         {
             _db = db;
+            _ass = ass;
         }
 
         public async Task<ServiceResult<List<PortListItemDto>>> GetPortsByDateAsync(PortByDateDto request)
@@ -52,24 +54,24 @@ namespace JAXPORT.Services
                 .ToListAsync();
 
             // Take the list of US Ports and find equal entries in reference.ports
-            var matchedUsPorts = await _db.Ports
+            var matchedUsPorts = _ass.Ports
                 .Where(r => usPorts.Any(p => p.UsPort == r.PortName && p.UsPortState == r.State))
                 .Select(r => new PortListItemDto
                 {
                     Id = r.Id,
                     DisplayName = r.DisplayName
                 })
-                .ToListAsync();
+                .ToList();
 
             // Take the list of Foreign Ports and find equal entries in reference.ports
-            var matchedForeignPorts = await _db.Ports
+            var matchedForeignPorts = _ass.Ports
                 .Where(r => foreignPorts.Any(p => p.ForeignInitialPort == r.PortName && p.ForeignInitialCountry == r.Country))
                 .Select(r => new PortListItemDto
                 {
                     Id = r.Id,
                     DisplayName = r.DisplayName
                 })
-                .ToListAsync();
+                .ToList();
 
             var completedPortList = matchedUsPorts;
             completedPortList.AddRange(matchedForeignPorts);
