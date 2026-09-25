@@ -5,7 +5,7 @@ const views = document.querySelectorAll(".dashboard-view");
 
 document.addEventListener("DOMContentLoaded", () => {
     updateDatabaseStatus();
-    setInterval(updateDatabaseStatus, 60000);
+    setInterval(updateDatabaseStatus, 30000);
 
     tabs.forEach(tab => {
 
